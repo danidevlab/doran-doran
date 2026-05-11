@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>보호자 인증</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* PIN 도트 표시 */
+        .pin-display {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #ddd;
+            transition: background-color 0.2s;
+        }
+
+        .dot.active {
+            background-color: #4A90E2;
+        }
+
+        /* 키패드 스타일 */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        .key {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: none;
+            background-color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .key:active {
+            background-color: #e9ecef;
+            transform: scale(0.95);
+        }
+
+        .key.empty { background: none; box-shadow: none; cursor: default; }
+        .key.delete { font-size: 1rem; color: #ff4d4f; }
+
+    </style>
+</head>
+<body>
+
+    <div class="title">보호자 PIN 번호 입력</div>
+
+    <div class="pin-display">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <div class="keypad">
+        <button class="key" onclick="addNumber(1)">1</button>
+        <button class="key" onclick="addNumber(2)">2</button>
+        <button class="key" onclick="addNumber(3)">3</button>
+        <button class="key" onclick="addNumber(4)">4</button>
+        <button class="key" onclick="addNumber(5)">5</button>
+        <button class="key" onclick="addNumber(6)">6</button>
+        <button class="key" onclick="addNumber(7)">7</button>
+        <button class="key" onclick="addNumber(8)">8</button>
+        <button class="key" onclick="addNumber(9)">9</button>
+        <div class="key empty"></div>
+        <button class="key" onclick="addNumber(0)">0</button>
+        <button class="key delete" onclick="deleteNumber()">삭제</button>
+    </div>
+
+    <script>
+        let pin = "";
+        const dots = document.querySelectorAll('.dot');
+
+        function addNumber(num) {
+            if (pin.length < 4) {
+                pin += num;
+                updateDots();
+            }
+            
+            if (pin.length === 4) {
+                // 안드로이드 네이티브 코드로 PIN 전달
+                if (window.Android) {
+                    window.Android.onPinComplete(pin);
+                } else {
+                    console.log("입력된 PIN:", pin);
+                    setTimeout(() => { alert("인증 시도: " + pin); resetPin(); }, 100);
+                }
+            }
+        }
+
+        function deleteNumber() {
+            pin = pin.slice(0, -1);
+            updateDots();
+        }
+
+        function updateDots() {
+            dots.forEach((dot, index) => {
+                if (index < pin.length) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function resetPin() {
+            pin = "";
+            updateDots();
+        }
+    </script>
+</body>
+</html>
