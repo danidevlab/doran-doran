@@ -86,6 +86,8 @@
         <div class="dot"></div>
         <div class="dot"></div>
         <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
     </div>
 
     <div class="keypad">
@@ -108,12 +110,12 @@
         const dots = document.querySelectorAll('.dot');
 
         function addNumber(num) {
-            if (pin.length < 4) {
+            if (pin.length < 6) {
                 pin += num;
                 updateDots();
             }
             
-            if (pin.length === 4) {
+            if (pin.length === 6) {
                 // 안드로이드 네이티브 코드로 PIN 전달
                 if (window.Android) {
                     window.Android.onPinComplete(pin);
